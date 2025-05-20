@@ -3,29 +3,66 @@ using System;
 // Abstract class
 public abstract class Automobile
 {
-    public int NumDoors { get; set; } = 4;
-    public int NumWheels { get; set; } = 4;
+    // Private fields
+    private int numDoors = 4;
+    private int numWheels = 4;
 
+    // Public properties to expose data safely
+    public int NumDoors
+    {
+        get => numDoors;
+        protected set
+        {
+            if (value > 0) numDoors = value;
+        }
+    }
+
+    public int NumWheels
+    {
+        get => numWheels;
+        protected set
+        {
+            if (value > 0) numWheels = value;
+        }
+    }
+
+    // Abstract method to be implemented by subclasses
     public abstract void Drive();
 }
 
 // Concrete class
 public class Car : Automobile
 {
+    // Override Drive method
     public override void Drive()
     {
         Console.WriteLine("Driving...");
     }
 }
 
-// Ford implementation
+// Concrete brand-specific class
 public class Ford : Car
 {
-    public string Model { get; set; }
+    // Private field with a public getter
+    private string model;
 
+    public string Model
+    {
+        get => model;
+        private set
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+                model = value;
+        }
+    }
+
+    // Constructor
     public Ford(string model)
     {
         Model = model;
+
+        // Example of modifying protected members
+        NumDoors = 2; // e.g., a sports model
     }
 
     public void DisplayInfo()
@@ -34,14 +71,17 @@ public class Ford : Car
     }
 }
 
-// Example usage
+// Entry point
 class Program
 {
     static void Main()
     {
-        Ford myFord = new Ford("Mustang");
-        myFord.DisplayInfo();
-        myFord.Drive();
+        Ford mustang = new Ford("Mustang");
+        mustang.DisplayInfo();
+        mustang.Drive();
+
+        // Invalid: direct access to private/protected members is not allowed outside the class hierarchy
+        // mustang.numDoors = 6;        ❌
+        // mustang.Model = "Fusion";    ❌
     }
 }
-
